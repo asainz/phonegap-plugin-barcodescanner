@@ -11,6 +11,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <AudioToolbox/AudioToolbox.h>
+#import "CDVInAppBrowser.h"
 
 //------------------------------------------------------------------------------
 // use the all-in-one version of zxing that we built
@@ -163,6 +164,7 @@
                  parentViewController:self.viewController
                  alterateOverlayXib:overlayXib
                  ];
+
     // queue [processor scanBarcode] to run on the event loop
     [processor performSelector:@selector(scanBarcode) withObject:nil afterDelay:0];
 }
@@ -313,17 +315,27 @@ parentViewController:(UIViewController*)parentViewController
 
 //--------------------------------------------------------------------------
 - (void)openDialog {
-    [self.parentViewController
-     presentViewController:self.viewController
-     animated:YES completion:nil
-     ];
+    
+    CDVInAppBrowserViewController *vc = [CDVInAppBrowserViewController sharedInAppBrowser];
+    
+    [vc presentViewController:self.viewController animated:YES completion:nil];
+    
+//    [self.parentViewController
+//     presentViewController:self.viewController
+//     animated:YES completion:nil
+//     ];
 }
 
 //--------------------------------------------------------------------------
 - (void)barcodeScanDone {
+//    self.capturing = NO;
+//    [self.captureSession stopRunning];
+//    [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
+    
     self.capturing = NO;
     [self.captureSession stopRunning];
-    [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
+    CDVInAppBrowserViewController *vc = [CDVInAppBrowserViewController sharedInAppBrowser];
+    [vc dismissViewControllerAnimated:YES completion:nil];
     
     // viewcontroller holding onto a reference to us, release them so they
     // will release us
